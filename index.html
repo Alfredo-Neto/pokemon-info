@@ -77,8 +77,8 @@
 
             <br>
 
-            <input type="text" v-model="name" placeholder="Digite o nome de um pokemon">
-            <button class="btn" @click="getPokemon()">Buscar</button>
+            <input v-bind:disabled="busy"type="text" v-model="name" placeholder="Digite o nome de um pokemon">
+            <button v-bind:disabled="busy" class="btn" @click="getPokemon()">Buscar</button>
 
             <div v-if="busy" class="busy"></div>
             <div v-else>
@@ -132,11 +132,12 @@
                 name: '',
                 pokeName: '',
                 pokeImg: '',
-                busy: false
+                busy: false,
             },
             methods: {
                 getPokemon: async function () {
                     this.busy = true;
+                    
                     this.name = this.name.toLowerCase();
                     await fetch(`https://pokeapi.co/api/v2/pokemon/${this.name}`, {
                         body: null,
@@ -167,7 +168,7 @@
 
                 capitalizeFirstLetter: function (str) {
                     const str2 = str.charAt(0).toUpperCase() + str.slice(1);
-                     return str2;
+                    return str2;
                 },
                 clearForm: function () {
                     this.name = '';

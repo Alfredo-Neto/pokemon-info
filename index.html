@@ -54,8 +54,10 @@
 
         .busy {
             margin-top: 10px;
-            border: 10px solid #f3f3f3; /* Light grey */
-            border-top: 10px solid #3498db; /* Blue */
+            border: 10px solid #f3f3f3;
+            /* Light grey */
+            border-top: 10px solid #3498db;
+            /* Blue */
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -63,10 +65,14 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); 
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
-}
     </style>
 
     <div id="app">
@@ -77,12 +83,12 @@
 
             <br>
 
-            <input v-bind:disabled="busy"type="text" v-model="name" placeholder="Digite o nome de um pokemon">
+            <input v-bind:disabled="busy" type="text" v-model="name" placeholder="Digite o nome de um pokemon">
             <button v-bind:disabled="busy" class="btn" @click="getPokemon()">Buscar</button>
 
             <div v-if="busy" class="busy"></div>
             <div v-else>
-            
+
                 <br>
                 <br>
                 <div class="row row-dark">Name:</div>
@@ -137,32 +143,32 @@
             methods: {
                 getPokemon: async function () {
                     this.busy = true;
-                    
+
                     this.name = this.name.toLowerCase();
                     await fetch(`https://pokeapi.co/api/v2/pokemon/${this.name}`, {
                         body: null,
                         method: "get"
                     })
-                    .then(async (response) => {
-                        const text = await response.text();
-                        console.log("Debug antes de converter", text);
+                        .then(async (response) => {
+                            const text = await response.text();
+                            console.log("Debug antes de converter", text);
 
-                        if (response.ok) {
-                            const data = JSON.parse(text);
-                            console.log("Debug do objeto data", data);
-                            alert("OK!");
-                            const nameCapitalized = this.capitalizeFirstLetter(this.name);
-                            this.pokeName = nameCapitalized;
-                            this.abilities = data.abilities;
-                            this.attributes.weight = data.weight;
-                            this.attributes.height = data.height;
-                            this.pokeImg = data.sprites.front_default;
-                            this.clearForm();
-                        }
-                        else {
-                            alert("Um erro aconteceu na request!, Verifique o console");
-                        }
-                    });
+                            if (response.ok) {
+                                const data = JSON.parse(text);
+                                console.log("Debug do objeto data", data);
+                                alert("OK!");
+                                const nameCapitalized = this.capitalizeFirstLetter(this.name);
+                                this.pokeName = nameCapitalized;
+                                this.abilities = data.abilities;
+                                this.attributes.weight = data.weight;
+                                this.attributes.height = data.height;
+                                this.pokeImg = data.sprites.front_default;
+                                this.clearForm();
+                            }
+                            else {
+                                alert("Um erro aconteceu na request!, Verifique o console");
+                            }
+                        });
                     this.busy = false;
                 },
 

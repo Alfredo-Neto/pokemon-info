@@ -51,59 +51,76 @@
             margin-top: 10px;
             padding: 5px 10px;
         }
+
+        .busy {
+            margin-top: 10px;
+            border: 10px solid #f3f3f3; /* Light grey */
+            border-top: 10px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); 
+        }
+}
     </style>
 
     <div id="app">
 
         <div class="container">
-
             <br>
             <h1>Get Pokemon info: </h1>
 
             <br>
 
-            <label for="pokemon"></label>
-            <input type="text" v-model="name">
+            <input type="text" v-model="name" placeholder="Digite o nome de um pokemon">
             <button class="btn" @click="getPokemon()">Buscar</button>
 
-            <br>
-            <br>
-            <div class="row row-dark">Name:</div>
-            <h2>{{ pokeName }}</h2>
-            <br>
+            <div v-if="busy" class="busy"></div>
+            <div v-else>
+            
+                <br>
+                <br>
+                <div class="row row-dark">Name:</div>
+                <br>
+                <h2>{{ pokeName }}</h2>
+                <br>
 
-            <img v-bind:src="pokeImg" alt="">
+                <img v-bind:src="pokeImg" alt="">
 
-            <br>
+                <br>
 
-            <div class="row row-dark">Attributes:</div>
-            <br>
-            <ul>
-                <li>
-                    Weight:
-                    {{ attributes.weight }}
-                </li>
+                <div class="row row-dark">Attributes:</div>
+                <br>
+                <ul>
+                    <li>
+                        Weight:
+                        {{ attributes.weight }}
+                    </li>
 
-                <li>
-                    Height:
-                    {{ attributes.height }}
-                </li>
-            </ul>
-            <br>
-            <br>
+                    <li>
+                        Height:
+                        {{ attributes.height }}
+                    </li>
+                </ul>
+                <br>
+                <br>
 
-            <div class="row row-dark">Abilities:</div>
-            <ul>
-                <li v-for="ability in abilities">
-                    {{ ability["ability"]["name"] }}
-                </li>
-            </ul>
-
+                <div class="row row-dark">Abilities:</div>
+                <ul>
+                    <li v-for="ability in abilities">
+                        {{ ability["ability"]["name"] }}
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <script>
-
         var app = new Vue({
             el: '#app',
             data: {
@@ -114,46 +131,52 @@
                 },
                 name: '',
                 pokeName: '',
-                pokeImg: ''
+                pokeImg: '',
+                busy: false
             },
             methods: {
-                getPokemon: function () {
+                getPokemon: async function () {
+                    this.busy = true;
                     this.name = this.name.toLowerCase();
-                    fetch(`https://pokeapi.co/api/v2/pokemon/${this.name}`, {
+                    await fetch(`https://pokeapi.co/api/v2/pokemon/${this.name}`, {
                         body: null,
                         method: "get"
                     })
-                        .then(async (response) => {
-                            const text = await response.text();
-                            console.log("Debug antes de converter", text);
+                    .then(async (response) => {
+                        const text = await response.text();
+                        console.log("Debug antes de converter", text);
 
-                            if (response.ok) {
-                                const data = JSON.parse(text);
-                                console.log("Debug do objeto data", data);
-                                alert("OK!");
-                                const nameCapitalized = capitalizeFirstLetter(this.name);
-                                this.pokeName = nameCapitalized;
-                                this.abilities = data.abilities;
-                                this.attributes.weight = data.weight;
-                                this.attributes.height = data.height;
-                                this.pokeImg = data.sprites.front_default
-                            }
-                            else {
-                                alert("Um erro aconteceu na request!, Verifique o console");
-                            }
-                        })
+                        if (response.ok) {
+                            const data = JSON.parse(text);
+                            console.log("Debug do objeto data", data);
+                            alert("OK!");
+                            const nameCapitalized = this.capitalizeFirstLetter(this.name);
+                            this.pokeName = nameCapitalized;
+                            this.abilities = data.abilities;
+                            this.attributes.weight = data.weight;
+                            this.attributes.height = data.height;
+                            this.pokeImg = data.sprites.front_default;
+                            this.clearForm();
+                        }
+                        else {
+                            alert("Um erro aconteceu na request!, Verifique o console");
+                        }
+                    });
+                    this.busy = false;
                 },
-                created: function () {
-                    this.getPokemon();
-                }
+
+                capitalizeFirstLetter: function (str) {
+                    const str2 = str.charAt(0).toUpperCase() + str.slice(1);
+                     return str2;
+                },
+                clearForm: function () {
+                    this.name = '';
+                },
+                // created: function () {
+                //     this.getPokemon();
+                // }
             }
         })
-
-        function capitalizeFirstLetter(str) {
-            const str2 = str.charAt(0).toUpperCase() + str.slice(1);
-            return str2;
-        }
-
     </script>
 </body>
 

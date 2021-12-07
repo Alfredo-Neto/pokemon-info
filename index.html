@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,14 +8,16 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <title>Get Pokemons</title>
 </head>
+
 <body>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
         * {
             box-sizing: border-box;
             margin: 0;
-            padding:  0;
+            padding: 0;
         }
 
         body {
@@ -34,7 +37,7 @@
         }
 
         .row-dark {
-            background: rgb(134, 133, 133);
+            background: #eee;
         }
 
         .container {
@@ -48,9 +51,6 @@
             margin-top: 10px;
             padding: 5px 10px;
         }
-
-
-
     </style>
 
     <div id="app">
@@ -69,7 +69,7 @@
             <br>
             <br>
             <div class="row row-dark">Name:</div>
-                <h2>{{ pokeName }}</h2>
+            <h2>{{ pokeName }}</h2>
             <br>
 
             <img v-bind:src="pokeImg" alt="">
@@ -81,12 +81,12 @@
             <ul>
                 <li>
                     Weight:
-                    {{ attributes.weight }} 
+                    {{ attributes.weight }}
                 </li>
 
                 <li>
                     Height:
-                    {{ attributes.height }} 
+                    {{ attributes.height }}
                 </li>
             </ul>
             <br>
@@ -94,8 +94,8 @@
 
             <div class="row row-dark">Abilities:</div>
             <ul>
-                <li v-for="ability in abilities"> 
-                    {{ ability["ability"]["name"] }} 
+                <li v-for="ability in abilities">
+                    {{ ability["ability"]["name"] }}
                 </li>
             </ul>
 
@@ -104,56 +104,57 @@
 
     <script>
 
-    var app = new Vue({
-        el: '#app',
-        data: {
-          abilities: [],
-          attributes: {
-              weight: '',
-              height: ''
-          },
-          name: '',
-          pokeName: '',
-          pokeImg: ''
-        },
-        methods: {
-            getPokemon: function () {
-                this.name = this.name.toLowerCase();
-                fetch(`https://pokeapi.co/api/v2/pokemon/${this.name}`, {
-                    body: null,
-                    method: "get"
-                })
-                .then(async (response) => {
-                    const text = await response.text();
-                    console.log("Debug antes de converter", text);
-                   
-                    if (response.ok) {
-                        const data = JSON.parse(text);
-                        console.log("Debug do objeto data", data);
-                        alert("OK!");
-                        const nameCapitalized = capitalizeFirstLetter(this.name);
-                        this.pokeName = nameCapitalized;
-                        this.abilities = data.abilities;
-                        this.attributes.weight = data.weight;
-                        this.attributes.height = data.height;
-                        this.pokeImg = data.sprites.front_default
-                    }
-                    else {
-                        alert("Um erro aconteceu na request!, Verifique o console");
-                    }
-                })
+        var app = new Vue({
+            el: '#app',
+            data: {
+                abilities: [],
+                attributes: {
+                    weight: '',
+                    height: ''
+                },
+                name: '',
+                pokeName: '',
+                pokeImg: ''
             },
-            created: function() {
-                this.getPokemon();
-            }
-        }
-      })
+            methods: {
+                getPokemon: function () {
+                    this.name = this.name.toLowerCase();
+                    fetch(`https://pokeapi.co/api/v2/pokemon/${this.name}`, {
+                        body: null,
+                        method: "get"
+                    })
+                        .then(async (response) => {
+                            const text = await response.text();
+                            console.log("Debug antes de converter", text);
 
-      function capitalizeFirstLetter (str) {
-        const str2 = str.charAt(0).toUpperCase() + str.slice(1);
-        return str2;
-      }
-        
+                            if (response.ok) {
+                                const data = JSON.parse(text);
+                                console.log("Debug do objeto data", data);
+                                alert("OK!");
+                                const nameCapitalized = capitalizeFirstLetter(this.name);
+                                this.pokeName = nameCapitalized;
+                                this.abilities = data.abilities;
+                                this.attributes.weight = data.weight;
+                                this.attributes.height = data.height;
+                                this.pokeImg = data.sprites.front_default
+                            }
+                            else {
+                                alert("Um erro aconteceu na request!, Verifique o console");
+                            }
+                        })
+                },
+                created: function () {
+                    this.getPokemon();
+                }
+            }
+        })
+
+        function capitalizeFirstLetter(str) {
+            const str2 = str.charAt(0).toUpperCase() + str.slice(1);
+            return str2;
+        }
+
     </script>
 </body>
+
 </html>

@@ -79,11 +79,10 @@
 
         <div class="container">
             <br>
-            <h1>Get Pokemon info: </h1>
-
             <br>
 
-            <input v-bind:disabled="busy" type="text" v-model="name" placeholder="Digite o nome de um pokemon">
+            <input v-bind:disabled="busy"  v-model="name" placeholder="Digite o nome de um pokemon">
+            <div> {{ answer }} </div>
             <button v-bind:disabled="busy" class="btn" @click="getPokemon()">Buscar</button>
 
             <div v-if="busy" class="busy"></div>
@@ -139,17 +138,25 @@
                 pokeName: '',
                 pokeImg: '',
                 busy: false,
+                notFound: false,
+                answer: ''
+            },
+            watch: {
+                name: function () {
+                    this.answer = 'Esperando voce terminar de digitar...';
+                }
             },
             methods: {
                 getPokemon: async function () {
+                    this.answer = '';
                     this.busy = true;
-
                     this.name = this.name.toLowerCase();
                     await fetch(`https://pokeapi.co/api/v2/pokemon/${this.name}`, {
                         body: null,
                         method: "get"
                     })
-                        .then(async (response) => {
+                    .then(async (response) => {
+                        try {
                             const text = await response.text();
                             console.log("Debug antes de converter", text);
 
@@ -167,9 +174,15 @@
                             }
                             else {
                                 alert("Um erro aconteceu na request!, Verifique o console");
+                                this.notFound = true;
                             }
-                        });
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    })
+                    .catch((error) => console.log(error));
                     this.busy = false;
+                    this.answer = '';
                 },
 
                 capitalizeFirstLetter: function (str) {

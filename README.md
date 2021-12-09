@@ -18,7 +18,7 @@ Little VueJs project for consuming a pokemon api and fetching out some infos.
 - Used loops
 - Used shorthand syntax
 - Used a bit of styling
-- User Watcher
+- Used Watcher
 
 ### Portugues:
 # pokemon-info

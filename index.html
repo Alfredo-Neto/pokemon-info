@@ -6,84 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <link rel="stylesheet" href="Styles/styles.css">
     <title>Get Pokemons</title>
 </head>
 
 <body>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-
-        input {
-            padding: 5px 50px;
-            border-radius: 5px;
-            outline: none;
-            text-align: center;
-        }
-
-        .row {
-            width: 100%;
-            text-align: center;
-        }
-
-        .row-dark {
-            background: #eee;
-        }
-
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .btn {
-            margin-top: 10px;
-            padding: 5px 10px;
-        }
-
-        .busy {
-            margin-top: 10px;
-            border: 10px solid #f3f3f3;
-            /* Light grey */
-            border-top: 10px solid #3498db;
-            /* Blue */
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 2s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
-
     <div id="app">
-
         <div class="container">
             <br>
             <br>
 
             <input v-bind:disabled="busy" @input="escrevendo"  v-model="name" placeholder="Digite o nome de um pokemon">
             <div> {{ answer }} </div>
-            <button v-bind:disabled="busy" class="btn" @click="getPokemon()">Buscar</button>
+            <button v-bind:disabled="busy" class="btn" @click="getPokemon">Buscar</button>
 
             <div v-if="busy" class="busy"></div>
             <div v-else-if="busyEscrevendo"></div>
@@ -125,84 +60,6 @@
         </div>
     </div>
 
-    <script>
-        var app = new Vue({
-            el: '#app',
-            data: {
-                abilities: [],
-                attributes: {
-                    weight: '',
-                    height: ''
-                },
-                name: '',
-                pokeName: '',
-                pokeImg: '',
-                busy: false,
-                busyEscrevendo: false,
-                notFound: false,
-                answer: ''
-            },
-            watch: {
-                name: function () {
-                    this.answer = 'Esperando voce terminar de digitar...';
-                }
-            },
-            methods: {
-                async getPokemon() {
-                    this.answer = '';
-                    this.busy = true;
-                    this.name = this.name.toLowerCase();
-                    await fetch(`https://pokeapi.co/api/v2/pokemon/${this.name}`, {
-                        body: null,
-                        method: "get"
-                    })
-                    .then(async (response) => {
-                        try {
-                            const text = await response.text();
-                            console.log("Debug antes de converter", text);
-
-                            if (response.ok) {
-                                const data = JSON.parse(text);
-                                console.log("Debug do objeto data", data);
-                                alert("OK!");
-                                const nameCapitalized = this.capitalizeFirstLetter(this.name);
-                                this.pokeName = nameCapitalized;
-                                this.abilities = data.abilities;
-                                this.attributes.weight = data.weight;
-                                this.attributes.height = data.height;
-                                this.pokeImg = data.sprites.front_default;
-                                this.clearForm();
-                            }
-                            else {
-                                alert("Um erro aconteceu na request!, Verifique o console");
-                                this.notFound = true;
-                            }
-                        } catch (error) {
-                            console.error(error);
-                        }
-                    })
-                    .catch((error) => console.log(error));
-                    this.busy = false;
-                    this.busyEscrevendo = false;
-                    this.answer = '';
-                },
-                escrevendo(value) {
-                    if (value != '') {
-                        this.busyEscrevendo = true
-                    }
-                },
-                capitalizeFirstLetter(str) {
-                    const str2 = str.charAt(0).toUpperCase() + str.slice(1);
-                    return str2;
-                },
-                clearForm() {
-                    this.name = '';
-                },
-                // created: function () {
-                //     this.getPokemon();
-                // }
-            }
-        })
-    </script>
+    <script src="App/app.js"></script>
 </body>
 </html>

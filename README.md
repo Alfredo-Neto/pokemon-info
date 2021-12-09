@@ -1,4 +1,4 @@
-English:
+### English:
 
   # pokemon-info
   Little VueJs project for consuming a pokemon api and fetching out some infos.
@@ -17,7 +17,7 @@ English:
     - Used shorthand syntax
     - Used a bit of styling
   
-  Portugues:
+  ### Portugues:
     # pokemon-info
     Pequeno projeto em VueJs feito para consumir uma api que retorna dados de pokemons em json
     
